@@ -51,14 +51,13 @@
 5. The game gets faster as your score increases – stay focused!
 6. Press **RESTART** after Game Over to try again.
 
+## [LIVE VERSION DEMO CLICK 👆 ON ME](https://car-racing-fahad.netlify.app/)
+
 <h1 align="center">🏎️ CAR RACING 🚘 </h1>
 
 <p align="center">
 🔥 Dodge Traffic • 🚗 Race Fast • 🏆 Beat High Scores • ⚡ Endless Fun
 </p>
-
-
-[LIVE VERSION DEMO CLICK 👆 ON ME](https://car-racing-fahad.netlify.app/)
 
 <div align="center">
 
