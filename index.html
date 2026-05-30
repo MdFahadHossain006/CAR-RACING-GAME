@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>CUSTOM DRIVER RACING — ENTER YOUR NAME</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at 20% 30%, #0b1a20, #030c0f);
+            font-family: 'Segoe UI', 'Poppins', 'Orbitron', 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 32px 20px;
+            position: relative;
+        }
+
+        /* Animated grain overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-radial-gradient(circle at 20% 30%, rgba(0,0,0,0.02) 0px, rgba(255,255,240,0.01) 2px, transparent 3px);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* MAIN GLASS CONTAINER */
+        .glass-race {
+            backdrop-filter: blur(14px) saturate(170%);
+            background: rgba(12, 25, 28, 0.55);
+            border-radius: 64px;
+            padding: 24px 30px 30px 30px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(245, 197, 66, 0.35);
+            transition: all 0.2s ease;
+        }
+
+        /* TOP BADGE - ANIMATED DEVELOPER CREDIT */
+        .dev-badge {
+            text-align: center;
+            margin-bottom: 18px;
+            animation: glowPulse 2.2s infinite ease-in-out;
+        }
+        .dev-badge h2 {
+            font-size: 1rem;
+            letter-spacing: 2px;
+            background: linear-gradient(120deg, #ffe6b3, #ffbc6e, #ffdd99);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 210, 90, 0.5);
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+            box-shadow: 0 0 12px rgba(255, 200, 70, 0.3);
+        }
+        @keyframes glowPulse {
+            0% { text-shadow: 0 0 0px #ffd966; opacity: 0.9; }
+            50% { text-shadow: 0 0 8px #ffbe3c; opacity: 1; }
+            100% { text-shadow: 0 0 0px #ffd966; opacity: 0.9; }
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 36px;
+            box-shadow: 0 0 0 3px rgba(245, 197, 66, 0.7), 0 20px 35px rgba(0, 0, 0, 0.5);
+            cursor: default;
+            background-color: #172727;
+        }
+
+        /* NAME INPUT SECTION - GLASS PREMIUM */
+        .name-section {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(12px);
+            padding: 12px 20px;
+            border-radius: 60px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+            border: 1px solid rgba(245, 197, 66, 0.6);
+        }
+        .name-label {
+            font-family: 'Orbitron', monospace;
+            color: #ffecb3;
+            font-weight: bold;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        .driver-input {
+            background: rgba(20, 30, 28, 0.9);
+            border: 1px solid #f5c542;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            font-family: 'Orbitron', monospace;
+            color: #ffefc0;
+            outline: none;
+            width: 200px;
+            text-align: center;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .driver-input:focus {
+            border-color: #ffaa33;
+            box-shadow: 0 0 12px rgba(255, 200, 80, 0.5);
+            background: rgba(0,0,0,0.8);
+        }
+        .set-name-btn {
+            background: rgba(245, 197, 66, 0.85);
+            backdrop-filter: blur(4px);
+            border: none;
+            padding: 8px 22px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-family: 'Orbitron', monospace;
+            color: #1a2a1f;
+            cursor: pointer;
+            transition: 0.1s linear;
+            letter-spacing: 1px;
+        }
+        .set-name-btn:active {
+            transform: scale(0.96);
+        }
+        .current-driver {
+            font-size: 0.8rem;
+            color: #ffdd99;
+            background: rgba(0,0,0,0.5);
+            padding: 5px 12px;
+            border-radius: 30px;
+        }
+
+        /* INFO PANEL */
+        .info-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-top: 18px;
+            margin-bottom: 18px;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(12px);
+            padding: 12px 26px;
+            border-radius: 80px;
+            border: 1px solid rgba(245, 197, 66, 0.6);
+            color: #f3f0e2;
+            font-weight: bold;
+        }
+        .driver-name-display {
+            font-size: 1.5rem;
+            background: linear-gradient(145deg, #ffdd99, #ffb347);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 2px;
+            animation: subtleRide 2s infinite alternate;
+        }
+        @keyframes subtleRide {
+            0% { transform: translateY(0px); text-shadow: 0 0 0px gold;}
+            100% { transform: translateY(-1px); text-shadow: 0 0 4px gold;}
+        }
+        .score-box, .high-box {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 6px 20px;
+            border-radius: 40px;
+            font-size: 1.2rem;
+            font-family: 'Monaco', monospace;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 215, 100, 0.5);
+        }
+        .score-box span, .high-box span {
+            color: #ffd966;
+            margin-right: 10px;
+        }
+
+        /* BUTTONS */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 28px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .glass-btn {
+            background: rgba(20, 30, 28, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(245, 200, 100, 0.8);
+            font-size: 1.35rem;
+            font-weight: bold;
+            padding: 10px 28px;
+            border-radius: 60px;
+            color: #ffefc0;
+            font-family: 'Orbitron', monospace;
+            cursor: pointer;
+            transition: 0.15s linear;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1.5px;
+        }
+        .glass-btn:active {
+            transform: scale(0.96);
+            background: rgba(50, 60, 45, 0.85);
+            border-color: #ffcc66;
+        }
+        .status {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 18px;
+            color: #ffeaaf;
+            border: 1px solid #f5c54260;
+        }
+
+        /* CONTRACT SECTION */
+        .contract-section {
+            margin-top: 28px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 48px;
+            padding: 16px 20px;
+            border: 1px solid rgba(255, 200, 100, 0.4);
+        }
+        .contract-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9rem;
+            color: #ffddbb;
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .social-icon {
+            background: rgba(20, 30, 35, 0.75);
+            backdrop-filter: blur(12px);
+            padding: 12px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-family: 'Segoe UI', system-ui;
+            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid rgba(245, 197, 66, 0.6);
+            color: #ffecb3;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+        }
+        .social-icon:hover {
+            transform: translateY(-4px);
+            background: rgba(0, 0, 0, 0.8);
+            border-color: #ffbe3c;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            color: white;
+        }
+
+        @media (max-width: 700px) {
+            .glass-race { padding: 16px 18px; }
+            .driver-name-display { font-size: 1.2rem; }
+            .score-box, .high-box { font-size: 0.9rem; padding: 3px 14px; }
+            .glass-btn { padding: 6px 18px; font-size: 1rem; }
+            .name-section { flex-direction: column; align-items: stretch; }
+            .driver-input { width: 100%; }
+            .set-name-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div class="glass-race">
+        <div class="dev-badge">
+            <h2>⚡ THIS WEBSITE IS DEVELOPED BY — MD. FAHAD HOSSAIN ⚡</h2>
+        </div>
+
+        <!-- CUSTOM NAME SECTION -->
+        <div class="name-section">
+            <span class="name-label">🏎️ ENTER RACER NAME:</span>
+            <input type="text" id="driverNameInput" class="driver-input" placeholder="Your name here..." maxlength="16" autocomplete="off">
+            <button id="setNameBtn" class="set-name-btn">⚡ SET DRIVER ⚡</button>
+            <div class="current-driver" id="currentDriverHint">current: RACER</div>
+        </div>
+
+        <canvas id="gameCanvas" width="500" height="650"></canvas>
+
+        <div class="info-panel">
+            <div class="driver-name-display" id="dynamicDriverName">🏁 RACER 🏁</div>
+            <div class="score-box"><span>🏆 SCORE</span> <span id="scoreValue">0</span></div>
+            <div class="high-box"><span>⭐ BEST</span> <span id="highScoreValue">0</span></div>
+        </div>
+
+        <div class="controls">
+            <button class="glass-btn" id="leftBtn">◀ LEFT</button>
+            <button class="glass-btn" id="rightBtn">RIGHT ▶</button>
+            <button class="glass-btn restart-btn" id="restartBtn">🔄 RESTART</button>
+        </div>
+        <div class="status" id="gameStatusText">🏎️ ENTER YOUR NAME & PRESS SET | AVOID RED CARS 🏎️</div>
+
+        <!-- CONTRACT WITH DEVELOPER -->
+        <div class="contract-section">
+            <div class="contract-title">
+                <span>📄</span> CONTRACT WITH DEVELOPER <span>🔗</span>
+            </div>
+            <div class="social-links">
+                <a class="social-icon" href="https://www.facebook.com/md.fahad.hossain.359237" target="_blank" rel="noopener noreferrer">📘 Facebook</a>
+                <a class="social-icon" href="https://www.instagram.com/mdfahadhossain006/" target="_blank" rel="noopener noreferrer">📸 Instagram</a>
+                <a class="social-icon" href="https://github.com/MdFahadHossain006" target="_blank" rel="noopener noreferrer">🐙 GitHub</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function(){
+        // ---------- CANVAS ----------
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const W = 500, H = 650;
+        const ROAD_WIDTH = 310;
+        const LANE_COUNT = 3;
+        const LANE_WIDTH = ROAD_WIDTH / LANE_COUNT;
+        const ROAD_OFFSET = (W - ROAD_WIDTH) / 2;
+
+        // Player settings
+        const PLAYER_WIDTH = 44;
+        const PLAYER_HEIGHT = 72;
+        let currentLane = 1;
+        let playerX = ROAD_OFFSET + (currentLane * LANE_WIDTH) + (LANE_WIDTH/2) - (PLAYER_WIDTH/2);
+        
+        // Enemies
+        let enemies = [];
+        const ENEMY_WIDTH = 46;
+        const ENEMY_HEIGHT = 80;
+        let baseSpeed = 3.6;
+        let currentSpeed = baseSpeed;
+        let score = 0;
+        let highScore = 0;
+        let gameRunning = true;
+        let animationId = null;
+        
+        // Spawn timing
+        let frameCounter = 0;
+        let spawnDelayFrames = 42;
+        let minSpawnDelay = 27;
+        let roadOffsetY = 0;
+
+        // DRIVER NAME (customizable)
+        let driverName = "RACER";
+        
+        // Load highscore from localStorage (per driver? we use global best but personalized optional)
+        try {
+            const saved = localStorage.getItem('racer_highscore_universal');
+            if(saved && !isNaN(parseInt(saved))) highScore = parseInt(saved);
+        } catch(e) {}
+        document.getElementById('highScoreValue').innerText = highScore;
+
+        // DOM elements for name
+        const nameInput = document.getElementById('driverNameInput');
+        const setNameBtn = document.getElementById('setNameBtn');
+        const dynamicDriverSpan = document.getElementById('dynamicDriverName');
+        const currentDriverHint = document.getElementById('currentDriverHint');
+        
+        // Function to update driver name display on UI & on car
+        function updateDriverNameUI() {
+            let displayName = driverName.trim().toUpperCase();
+            if(displayName === "") displayName = "RACER";
+            dynamicDriverSpan.innerHTML = `🏁 ${displayName} 🏁`;
+            currentDriverHint.innerText = `current: ${displayName}`;
+        }
+        
+        // Set custom driver name
+        function setCustomDriver() {
+            let newName = nameInput.value.trim();
+            if(newName === "") {
+                driverName = "RACER";
+            } else {
+                driverName = newName.substring(0, 16);
+            }
+            updateDriverNameUI();
+            // optional: small status feedback
+            const statusDiv = document.getElementById('gameStatusText');
+            statusDiv.innerHTML = `🔥 DRIVER CHANGED TO ${driverName.toUpperCase()}! GOOD LUCK 🔥`;
+            setTimeout(() => {
+                if(gameRunning) statusDiv.innerHTML = "🏎️ USE ← → ARROWS | AVOID TRAFFIC 🏎️";
+                else statusDiv.innerHTML = `💔 GAME OVER, ${driverName}. PRESS RESTART 💔`;
+            }, 1800);
+            nameInput.value = driverName;
+        }
+        
+        // Event listeners for name
+        setNameBtn.addEventListener('click', setCustomDriver);
+        nameInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') setCustomDriver(); });
+        
+        // Helper UI update for score
+        function updateScoreUI() {
+            document.getElementById('scoreValue').innerText = Math.floor(score);
+            if(score > highScore) {
+                highScore = Math.floor(score);
+                document.getElementById('highScoreValue').innerText = highScore;
+                try {
+                    localStorage.setItem('racer_highscore_universal', highScore);
+                } catch(e) {}
+            }
+        }
+        
+        // Difficulty curve
+        function updateDifficulty() {
+            let newSpeed = baseSpeed + Math.floor(score / 450);
+            if(newSpeed > 8.4) newSpeed = 8.4;
+            currentSpeed = newSpeed;
+            let dynamicDelay = Math.max(26, 48 - Math.floor(score / 150));
+            minSpawnDelay = Math.min(44, dynamicDelay);
+        }
+        
+        function spawnEnemy() {
+            if(!gameRunning) return;
+            let lane = Math.floor(Math.random() * 3);
+            let enemyX = ROAD_OFFSET + (lane * LANE_WIDTH) + (LANE_WIDTH/2) - (ENEMY_WIDTH/2);
+            enemies.push({
+                x: enemyX,
+                y: -ENEMY_HEIGHT - Math.random() * 90,
+                width: ENEMY_WIDTH,
+                height: ENEMY_HEIGHT,
+                lane: lane
+            });
+        }
+        
+        function collide(r1, r2) {
+            return !(r2.x > r1.x + r1.w || r2.x + r2.w < r1.x || r2.y > r1.y + r1.h || r2.y + r2.h < r1.y);
+        }
+        
+        function updatePlayerXFromLane() {
+            playerX = ROAD_OFFSET + (currentLane * LANE_WIDTH) + (LANE_WIDTH/2) - (PLAYER_WIDTH/2);
+            let minX = ROAD_OFFSET + 3;
+            let maxX = ROAD_OFFSET + ROAD_WIDTH - PLAYER_WIDTH - 3;
+            if(playerX < minX) playerX = minX;
+            if(playerX > maxX) playerX = maxX;
+        }
+        
+        function setLane(delta) {
+            if(!gameRunning) return;
+            let newLane = currentLane + delta;
+            if(newLane >= 0 && newLane <= 2) {
+                currentLane = newLane;
+                updatePlayerXFromLane();
+            }
+        }
+        
+        function restartGame() {
+            gameRunning = true;
+            score = 0;
+            currentSpeed = baseSpeed;
+            enemies = [];
+            currentLane = 1;
+            updatePlayerXFromLane();
+            frameCounter = 0;
+            spawnDelayFrames = 38;
+            minSpawnDelay = 27;
+            updateScoreUI();
+            updateDifficulty();
+            let driverDisplay = driverName.trim().toUpperCase() || "RACER";
+            document.getElementById('gameStatusText').innerHTML = `🏁 RACING AGAIN! GO ${driverDisplay} 🏁`;
+            document.getElementById('gameStatusText').style.color = "#ffecb3";
+        }
+        
+        // Update game logic
+        function updateGame() {
+            if(!gameRunning) return;
+            const playerRect = { x: playerX, y: H - PLAYER_HEIGHT - 14, w: PLAYER_WIDTH, h: PLAYER_HEIGHT };
+            let newEnemies = [];
+            for(let enemy of enemies) {
+                enemy.y += currentSpeed;
+                const enemyRect = { x: enemy.x, y: enemy.y, w: ENEMY_WIDTH, h: ENEMY_HEIGHT };
+                if(collide(playerRect, enemyRect)) {
+                    gameRunning = false;
+                    let nameShow = driverName.toUpperCase() || "RACER";
+                    document.getElementById('gameStatusText').innerHTML = `💥 GAME OVER, ${nameShow}! FINAL SCORE: ${Math.floor(score)} 💥`;
+                    document.getElementById('gameStatusText').style.color = "#ffaa77";
+                    return;
+                }
+                if(enemy.y + ENEMY_HEIGHT < H + 130) {
+                    newEnemies.push(enemy);
+                } else {
+                    if(gameRunning && (enemy.y + ENEMY_HEIGHT) >= H) {
+                        score += 11;
+                        updateScoreUI();
+                        updateDifficulty();
+                    }
+                }
+            }
+            enemies = newEnemies;
+            
+            if(frameCounter >= spawnDelayFrames) {
+                spawnEnemy();
+                frameCounter = 0;
+                let extraRand = Math.floor(Math.random() * 12);
+                spawnDelayFrames = Math.max(27, minSpawnDelay + extraRand);
+            } else {
+                frameCounter++;
+            }
+            if(enemies.length === 0 && gameRunning && Math.random() < 0.025) spawnEnemy();
+        }
+        
+        // ------------------- RENDERING WITH CUSTOM DRIVER NAME -------------------
+        function drawRoad() {
+            const grad = ctx.createLinearGradient(0, 0, 0, H);
+            grad.addColorStop(0, "#1b2e2b");
+            grad.addColorStop(1, "#0d1e1c");
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, W, H);
+            ctx.fillStyle = "#253b38";
+            ctx.fillRect(ROAD_OFFSET, 0, ROAD_WIDTH, H);
+            ctx.fillStyle = "#1c2c28";
+            for(let i=0;i<4;i++) ctx.fillRect(ROAD_OFFSET + 18 + i*85, 0, 8, H);
+            ctx.shadowBlur = 3;
+            ctx.shadowColor = "#ffdd88";
+            ctx.strokeStyle = "#f5cd6e";
+            ctx.lineWidth = 4;
+            ctx.setLineDash([22, 32]);
+            for(let i=1; i<LANE_COUNT; i++) {
+                let laneX = ROAD_OFFSET + i * LANE_WIDTH;
+                ctx.beginPath();
+                ctx.moveTo(laneX, 0);
+                ctx.lineTo(laneX, H);
+                ctx.stroke();
+            }
+            ctx.setLineDash([]);
+            ctx.shadowBlur = 0;
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = "#fedc83";
+            ctx.beginPath();
+            ctx.moveTo(ROAD_OFFSET-4, 0);
+            ctx.lineTo(ROAD_OFFSET-4, H);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(ROAD_OFFSET+ROAD_WIDTH+4, 0);
+            ctx.lineTo(ROAD_OFFSET+ROAD_WIDTH+4, H);
+            ctx.stroke();
+            roadOffsetY = (roadOffsetY + currentSpeed * 0.9) % 44;
+            ctx.fillStyle = "#ecd67a";
+            for(let y = roadOffsetY-44; y < H+44; y+=44) ctx.fillRect(ROAD_OFFSET+ROAD_WIDTH/2-10, y, 20, 7);
+        }
+        
+        function drawPlayerCar() {
+            const x = playerX;
+            const y = H - PLAYER_HEIGHT - 14;
+            ctx.shadowBlur = 4;
+            ctx.shadowColor = "rgba(0,0,0,0.6)";
+            ctx.fillStyle = "#2fa9ff";
+            ctx.beginPath();
+            ctx.roundRect(x, y, PLAYER_WIDTH, PLAYER_HEIGHT, 14);
+            ctx.fill();
+            ctx.fillStyle = "#1a4f78";
+            ctx.fillRect(x+4, y+8, PLAYER_WIDTH-8, 18);
+            ctx.fillStyle = "#c9eaff";
+            ctx.beginPath();
+            ctx.roundRect(x+8, y+32, PLAYER_WIDTH-16, 20, 8);
+            ctx.fill();
+            // Driver name on car (custom)
+            let shortName = driverName.toUpperCase();
+            if(shortName.length > 8) shortName = shortName.slice(0,7)+"..";
+            ctx.font = "bold 13px 'Orbitron', monospace";
+            ctx.fillStyle = "#fffac2";
+            ctx.shadowBlur = 2;
+            ctx.fillText(shortName, x+8, y+PLAYER_HEIGHT-14);
+            ctx.font = "9px monospace";
+            ctx.fillStyle = "#ffd98c";
+            ctx.fillText("RACER", x+14, y+PLAYER_HEIGHT-4);
+            ctx.fillStyle = "#ffcc66";
+            ctx.fillRect(x+6, y+PLAYER_HEIGHT-10, 8, 6);
+            ctx.fillRect(x+PLAYER_WIDTH-14, y+PLAYER_HEIGHT-10, 8, 6);
+            ctx.fillStyle = "#f0b34b";
+            ctx.fillRect(x+3, y+4, 8, 6);
+            ctx.fillRect(x+PLAYER_WIDTH-11, y+4, 8, 6);
+            ctx.shadowBlur = 0;
+        }
+        
+        function drawEnemyCar(enemy) {
+            const x = enemy.x, y = enemy.y;
+            ctx.fillStyle = "#cf3a2c";
+            ctx.beginPath();
+            ctx.roundRect(x, y, ENEMY_WIDTH, ENEMY_HEIGHT, 12);
+            ctx.fill();
+            ctx.fillStyle = "#901f10";
+            ctx.fillRect(x+8, y+12, ENEMY_WIDTH-16, 20);
+            ctx.fillStyle = "#4a160c";
+            ctx.fillRect(x+12, y+40, 8, 14);
+            ctx.fillRect(x+ENEMY_WIDTH-20, y+40, 8, 14);
+            ctx.fillStyle = "#f5b37a";
+            ctx.font = "bold 9px monospace";
+            ctx.fillText("RIVAL", x+12, y+ENEMY_HEIGHT-12);
+            ctx.fillStyle = "#ff6644";
+            ctx.fillRect(x+4, y+ENEMY_HEIGHT-12, 8, 5);
+            ctx.fillRect(x+ENEMY_WIDTH-12, y+ENEMY_HEIGHT-12, 8, 5);
+        }
+        
+        function drawGlowEffects() {
+            ctx.globalCompositeOperation = 'lighter';
+            ctx.fillStyle = "rgba(255,220,100,0.08)";
+            for(let i=0;i<3;i++) ctx.fillRect(ROAD_OFFSET + i*LANE_WIDTH+20, (Date.now()*0.002 % H), 6, 24);
+            ctx.globalCompositeOperation = 'source-over';
+        }
+        
+        function drawGameOverlay() {
+            if(!gameRunning) {
+                ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+                ctx.fillRect(0, 0, W, H);
+                ctx.font = "bold 34px 'Orbitron', monospace";
+                ctx.fillStyle = "#ffcd94";
+                ctx.fillText("GAME OVER", W/2-125, H/2-70);
+                ctx.font = "22px monospace";
+                ctx.fillStyle = "#ffecb3";
+                ctx.fillText(`🏁 ${driverName.toUpperCase()} SCORE: ${Math.floor(score)}`, W/2-135, H/2);
+                ctx.font = "14px monospace";
+                ctx.fillStyle = "#ccccaa";
+                ctx.fillText("press RESTART to race again", W/2-115, H/2+70);
+            }
+        }
+        
+        function drawStatsAndUI() {
+            ctx.font = "bold 15px 'Orbitron'";
+            ctx.fillStyle = "#f0e2b6";
+            ctx.fillText(`⚡ ${Math.floor(currentSpeed*9 + 28)} km/h`, 18, 50);
+            ctx.font = "bold 12px monospace";
+            ctx.fillStyle = "#ffecb3";
+            ctx.fillText(`DRIVER: ${driverName.toUpperCase()}`, 18, 90);
+            ctx.font = "10px monospace";
+            ctx.fillStyle = "#bcdfd0";
+            ctx.fillText("← →  SWITCH LANE", W-130, H-20);
+        }
+        
+        function render() {
+            drawRoad();
+            for(let e of enemies) drawEnemyCar(e);
+            drawPlayerCar();
+            drawGlowEffects();
+            drawStatsAndUI();
+            drawGameOverlay();
+        }
+        
+        function gameLoop() {
+            if(gameRunning) updateGame();
+            render();
+            animationId = requestAnimationFrame(gameLoop);
+        }
+        
+        // EVENT HANDLERS
+        function handleKey(e) {
+            if(e.key === 'ArrowLeft' || e.key === 'Left' || e.key === 'a') { e.preventDefault(); setLane(-1); }
+            else if(e.key === 'ArrowRight' || e.key === 'Right' || e.key === 'd') { e.preventDefault(); setLane(1); }
+            else if(e.key === 'r' || e.key === 'R') { if(!gameRunning) { e.preventDefault(); restartGame(); } }
+        }
+        
+        document.getElementById('leftBtn').addEventListener('click', () => setLane(-1));
+        document.getElementById('rightBtn').addEventListener('click', () => setLane(1));
+        document.getElementById('restartBtn').addEventListener('click', () => restartGame());
+        window.addEventListener('keydown', handleKey);
+        
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+                if (w < 2 * r) r = w / 2;
+                if (h < 2 * r) r = h / 2;
+                this.moveTo(x+r, y);
+                this.lineTo(x+w-r, y);
+                this.quadraticCurveTo(x+w, y, x+w, y+r);
+                this.lineTo(x+w, y+h-r);
+                this.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+                this.lineTo(x+r, y+h);
+                this.quadraticCurveTo(x, y+h, x, y+h-r);
+                this.lineTo(x, y+r);
+                this.quadraticCurveTo(x, y, x+r, y);
+                return this;
+            };
+        }
+        
+        // initial
+        updateDriverNameUI();
+        restartGame();
+        setTimeout(() => { if(gameRunning) spawnEnemy(); }, 400);
+        setTimeout(() => { if(gameRunning) spawnEnemy(); }, 900);
+        gameLoop();
+    })();
+</script>
+</body>
+</html>
