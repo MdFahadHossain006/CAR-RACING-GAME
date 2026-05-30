@@ -27,7 +27,7 @@
 
 <img src="https://img.shields.io/badge/Made%20By-Fahad-blueviolet?style=for-the-badge">
 
-[LIVE VERSION FOR DEMO CLICK 👆 ON ME](https://car-racing-fahad.netlify.app/)
+
 ---
 
 ## ✨ Features
@@ -58,6 +58,7 @@
 </p>
 
 
+[LIVE VERSION DEMO CLICK 👆 ON ME](https://car-racing-fahad.netlify.app/)
 
 <div align="center">
 
@@ -73,7 +74,9 @@
 
 </div>
 
-🚨 WARNING 🚨
+
+
+## 🚨 WARNING 🚨
 
 This game may cause:
 
