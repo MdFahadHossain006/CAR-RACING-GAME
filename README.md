@@ -9,6 +9,14 @@
 ![WebGL](https://img.shields.io/badge/WebGL-2.0-990000?logo=webgl)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 
+![Status](https://img.shields.io/badge/⚡_STATUS-Live-success?style=for-the-badge)
+
+![Game](https://img.shields.io/badge/🎮_GAME-Car_Racing-red?style=for-the-badge)
+
+
+<img src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=700&size=24&pause=1000&color=FF3131&center=true&vCenter=true&width=700&lines=Welcome+to+Car+Racing+Fahad!;Dodge+Traffic+Like+a+Pro!;Beat+Your+Highest+Score!;Race+Without+Limits!"/>
+
+
 </div>
 
 ## 🎮 Overview
