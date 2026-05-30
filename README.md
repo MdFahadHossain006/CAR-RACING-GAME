@@ -37,7 +37,7 @@
 - 🎨 **Premium Glass UI** – Frosted glass panels, glowing borders, dynamic lighting.
 - 📱 **Responsive Controls** – Keyboard (← → / A D) + on-screen buttons for touch devices.
 - 🧠 **Adaptive Difficulty** – Game speed and enemy spawn rates increase as you progress.
-- 🔗 **Developer Section** – Links to Facebook, Instagram, and GitHub (social contract).
+
 
 ---
 
