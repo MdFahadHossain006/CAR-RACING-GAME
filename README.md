@@ -27,6 +27,7 @@
 
 <img src="https://img.shields.io/badge/Made%20By-Fahad-blueviolet?style=for-the-badge">
 
+[LIVE VERSION FOR DEMO CLICK 👆 ON ME](https://car-racing-fahad.netlify.app/)
 ---
 
 ## ✨ Features
@@ -49,6 +50,41 @@
 4. Every enemy that safely passes below the screen adds **+11 points**.
 5. The game gets faster as your score increases – stay focused!
 6. Press **RESTART** after Game Over to try again.
+
+<h1 align="center">🏎️ CAR RACING 🚘 </h1>
+
+<p align="center">
+🔥 Dodge Traffic • 🚗 Race Fast • 🏆 Beat High Scores • ⚡ Endless Fun
+</p>
+
+
+
+<div align="center">
+
+# 🏆 HALL OF SPEED 🏆
+
+🥇 Master Racer
+
+🥈 Highway Legend
+
+🥉 Traffic Survivor
+
+🔥 Can You Reach The Top?
+
+</div>
+
+🚨 WARNING 🚨
+
+This game may cause:
+
+⚡ Adrenaline Rush
+
+🏎️ Extreme Speed Addiction
+
+🎯 Obsession With High Scores
+
+🔥 "Just One More Try" Syndrome
+
 
 ---
 ## ⭐ Support
@@ -74,7 +110,7 @@ If you enjoyed this project:
   - [YouTube](https://youtube.com/@brightnessworld)
   - [GitHub](https://github.com/MdFahadHossain006)
   - [GMAIL](hossainmdfahad67@ganil.com) 
-  - [LIVE VERSION FOR DEMO](https://car-racing-fahad.netlify.app/)
+
 ---
 ### ⚠️ Copyright & License
 
